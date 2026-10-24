@@ -25,3 +25,6 @@ build/
 *.log
 tmp/
 .cache/
+uploads/
+Uploads/
+screenshots/
