@@ -4,8 +4,8 @@
 
 ## Demo
 
-- **Staging (main on Vercel):** https://karatsu-fishing-hackathon-aibraincoachs-projects.vercel.app/
-- **Local:** `python3 -m http.server 8765` then http://localhost:8765/
+- **Live (Vercel, `main`):** https://karatsu-fishing-hackathon-aibraincoachs-projects.vercel.app/
+- **Dashboard:** https://vercel.com/aibraincoachs-projects/karatsu-fishing-hackathon
 
 ## Agents
 

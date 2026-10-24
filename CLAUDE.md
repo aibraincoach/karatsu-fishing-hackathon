@@ -8,7 +8,7 @@ Static demo: root `index.html` (inline CSS/JS, no libraries), `sample_data.json`
 
 ## Work
 
-Branch from `origin/main`; never commit on `main`. One commit per change with the tool's `Co-authored-by` line. Before a push that touches the demo or sample data: `node verify_sample_data.js`. Open locally: `python3 -m http.server 8765` → `http://localhost:8765/`.
+Branch from `origin/main`; never commit on `main`. One commit per change with the tool's `Co-authored-by` line. Before a push that touches the demo or sample data: `node verify_sample_data.js`. Open the demo on Vercel (see [docs/staging-worker.md](docs/staging-worker.md)); do not rely on a local HTTP server.
 
 ## Merging
 

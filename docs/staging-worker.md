@@ -12,15 +12,6 @@ This repo is a **static** site (`index.html` at the repository root). There is n
 
 Vercel project dashboard: https://vercel.com/aibraincoachs-projects/karatsu-fishing-hackathon
 
-## Local
-
-```sh
-python3 -m http.server 8765
-# open http://localhost:8765/
-```
-
-Use a free port if 8765 is already taken on the box.
-
 ## Deploy behaviour
 
 Pushes that change non-markdown app files trigger a Vercel deployment. Docs-only pushes under `docs/`, `skills/`, or `*.md` do not require a demo redeploy for correctness; the PM still merges document PRs under [CLAUDE.md](../CLAUDE.md).
