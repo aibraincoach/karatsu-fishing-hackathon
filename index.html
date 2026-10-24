@@ -47,7 +47,7 @@ body.scene-moonlit { --ink:#f3f6fb; --ink2:rgba(243,246,251,.7); --g1:rgba(255,2
 .api-pill span{font-size:13px;font-weight:500;white-space:nowrap}
 .sample-banner{margin:0 clamp(16px,3vw,48px) 8px;padding:9px 20px;border-radius:999px;text-align:center;font-size:14px;font-weight:600;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(20px);border:1px solid var(--gb)}
 .stage{position:relative;flex:1;min-height:0;overflow:hidden}
-.hero{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 clamp(16px,3vw,48px) 24px;transition:filter .6s,transform .6s,opacity .6s}
+.hero{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px clamp(16px,3vw,48px) 24px;transition:filter .6s,transform .6s,opacity .6s}
 .hero.retreat{filter:blur(10px);transform:scale(.94);opacity:.25;pointer-events:none}
 .hero-card{position:relative;width:min(880px,100%);padding:clamp(20px,3vw,40px);border-radius:clamp(22px,2.5vw,32px);background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--gb);box-shadow:0 30px 90px rgba(0,30,60,.28),inset 0 1px 0 rgba(255,255,255,.8);overflow:hidden}
 .hero-card h2{margin:0;font-size:clamp(24px,2.4vw,34px);font-weight:800}
@@ -196,7 +196,17 @@ const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("en-US"
 let selectedId = 1;
 let reportJaFull = "";
 let reportEnFull = "";
-let typeTimers = [];
+let jaTypeTimer = null;
+let enTypeTimer = null;
+const num = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+function clearTypeTimers() {
+  if (jaTypeTimer) clearInterval(jaTypeTimer);
+  if (enTypeTimer) clearInterval(enTypeTimer);
+  jaTypeTimer = enTypeTimer = null;
+}
 
 function setScene(mode) {
   document.body.className = "scene-" + mode;
@@ -240,8 +250,7 @@ function closeSheet() {
   $("report-en").textContent = "";
   $("caret-ja").classList.add("off");
   $("caret-en").classList.add("off");
-  typeTimers.forEach(clearInterval);
-  typeTimers = [];
+  clearTypeTimers();
   resetTiles(BASELINE);
   renderSeconds(null, false);
 }
@@ -303,17 +312,18 @@ function renderFields(data) {
 
 function totalsFrom(data) {
   const p = data.people || {};
-  const peopleAdd = (p.coop ?? 0) + (p.company ?? 0) + (p.other ?? 0);
+  const peopleAdd = num(p.coop) + num(p.company) + num(p.other);
   return {
     days: BASELINE.days + 1,
     people: BASELINE.people + peopleAdd,
-    company: BASELINE.company + (p.company ?? 0),
-    urchins: BASELINE.urchins + (data.urchins_removed ?? 0),
-    bags: BASELINE.bags + (data.seed_bags ?? 0),
+    company: BASELINE.company + num(p.company),
+    urchins: BASELINE.urchins + num(data.urchins_removed),
+    bags: BASELINE.bags + num(data.seed_bags),
   };
 }
 
 function typeReports(ja, en) {
+  clearTypeTimers();
   reportJaFull = ja || "";
   reportEnFull = en || "";
   $("report-ja").textContent = "";
@@ -321,26 +331,26 @@ function typeReports(ja, en) {
   $("caret-ja").classList.remove("off");
   $("caret-en").classList.add("off");
   let i = 0;
-  const tJa = setInterval(() => {
+  jaTypeTimer = setInterval(() => {
     i++;
     $("report-ja").textContent = reportJaFull.slice(0, i);
     if (i >= reportJaFull.length) {
-      clearInterval(tJa);
+      clearInterval(jaTypeTimer);
+      jaTypeTimer = null;
       $("caret-ja").classList.add("off");
       let j = 0;
       $("caret-en").classList.remove("off");
-      const tEn = setInterval(() => {
+      enTypeTimer = setInterval(() => {
         j++;
         $("report-en").textContent = reportEnFull.slice(0, j);
         if (j >= reportEnFull.length) {
-          clearInterval(tEn);
+          clearInterval(enTypeTimer);
+          enTypeTimer = null;
           $("caret-en").classList.add("off");
         }
       }, 16);
-      typeTimers.push(tEn);
     }
   }, 34);
-  typeTimers.push(tJa);
 }
 
 function renderSeconds(elapsedSec, isLive) {
