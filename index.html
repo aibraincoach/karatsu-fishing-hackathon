@@ -46,6 +46,8 @@ body.scene-moonlit { --ink:#f3f6fb; --ink2:rgba(243,246,251,.7); --g1:rgba(255,2
 .api-pill input{width:clamp(110px,14vw,200px);min-width:0;padding:8px 14px;border-radius:999px;border:1px solid var(--gb);background:var(--field);color:inherit;font:inherit;font-size:14px}
 .api-pill span{font-size:13px;font-weight:500;white-space:nowrap}
 .sample-banner{margin:0 clamp(16px,3vw,48px) 8px;padding:9px 20px;border-radius:999px;text-align:center;font-size:14px;font-weight:600;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(20px);border:1px solid var(--gb)}
+.sample-banner-input{width:min(880px,100%);margin-left:auto;margin-right:auto}
+.hero.retreat .sample-banner-input{display:none}
 .stage{position:relative;flex:1;min-height:0;overflow:hidden}
 .hero{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px clamp(16px,3vw,48px) 24px;transition:filter .6s,transform .6s,opacity .6s}
 .hero.retreat{filter:blur(10px);transform:scale(.94);opacity:.25;pointer-events:none}
@@ -121,9 +123,9 @@ body.scene-moonlit .sample-btns button.active,body.scene-deep .sample-btns butto
     <div class="glass-pill"><div class="sphere"></div><h1>海の森レポート / Sea Forest Report</h1></div>
     <label class="glass-pill api-pill"><span>API key / APIキー</span><input id="api-key" type="password" autocomplete="off" placeholder="sk-ant-…"></label>
   </div>
-  <p class="sample-banner">見本データ（架空の数字）/ Sample data (not real numbers)</p>
   <div class="stage">
     <div class="hero" id="hero">
+      <p class="sample-banner sample-banner-input">見本データ（架空の数字）/ Sample data (not real numbers)</p>
       <div class="hero-card">
         <div class="hero-head"><h2>入れる / Input</h2><div class="sample-btns" id="sample-btns"></div></div>
         <textarea id="memo" placeholder="音声メモの文字起こし / Voice memo transcript"></textarea>
@@ -179,7 +181,7 @@ body.scene-moonlit .sample-btns button.active,body.scene-deep .sample-btns butto
 <script type="application/json" id="sample-bundle">{"_note": "見本データ（架空の数字）/ Sample data (not real numbers). 地区名は実在、数字はすべて架空。", "sponsor": "玄界ブルー電機株式会社（架空）/ Genkai Blue Electric Co. (fictional)", "samples": [{"id": 1, "label": "見本① 駄竹 / Sample 1 Datake", "memo": "今日は朝8時から11時まで、駄竹の北側の岩場でやりました。漁協から4人、玄界ブルー電機さんから6人来てくれて、全部で10人。潜りは漁協の2人で、会社の人は船の上と浜で袋詰めと数えるのを手伝ってもらいました。ガンガゼは全部で620個くらい取った。母藻の袋は4つ沈めた。水はまだちょっとぬるいね、23度くらいやった。前に袋を入れたところで、小さい芽がちらほら出てきとる。ここ2年はなかったけん、ちょっとうれしかった。", "result": {"date": "今日 / Today", "place": "駄竹 北側の岩場 / North rocks, Datake", "people": {"coop": 4, "company": 6, "other": 0}, "hours": 3, "urchins_removed": 620, "seed_bags": 4, "sea_changes": ["水温 約23℃ / Water about 23°C", "以前母藻を入れた場所で海藻の芽を確認（2年ぶり）/ Young seaweed seen where bags were placed before (first time in 2 years)"], "needs_check": ["ガンガゼの数は「くらい」＝推定 / Urchin count is an estimate", "水温は「くらい」＝推定 / Water temperature is an estimate"], "report_ja": "本日、駄竹地区にて貴社社員6名と漁協4名の計10名で藻場づくりを行いました。海藻を食べるガンガゼを約620個取り除き、海藻の種となる母藻を4袋設置しました。以前母藻を設置した場所で、2年ぶりに海藻の芽が確認されました。ご支援ありがとうございます。", "report_en": "Today, 6 of your employees and 4 co-op members (10 people) worked on seaweed restoration in Datake. We removed about 620 sea urchins that eat seaweed and placed 4 bags of seed seaweed. Young seaweed was seen where we placed bags before, for the first time in two years. Thank you for your support."}}, {"id": 2, "label": "見本② 唐房 / Sample 2 Tobo", "memo": "唐房です。今日は9時から11時まで。うちの漁協から3人、会社さんから5人で8人やね。ガンガゼは350個。数は会社の人たちがちゃんと数えてくれた。母藻の袋は6つ入れました。去年入れたところはまだ変化なし。波はおだやかやった。", "result": {"date": "今日 / Today", "place": "唐房 / Tobo", "people": {"coop": 3, "company": 5, "other": 0}, "hours": 2, "urchins_removed": 350, "seed_bags": 6, "sea_changes": ["昨年の設置場所はまだ変化なし / No change yet where bags were placed last year", "波はおだやか / Calm sea"], "needs_check": [], "report_ja": "本日、唐房地区にて貴社社員5名と漁協3名の計8名で藻場づくりを行いました。ガンガゼを350個取り除き、母藻を6袋設置しました。昨年設置した場所はまだ変化が見られず、引き続き観察します。", "report_en": "Today, 5 of your employees and 3 co-op members (8 people) worked on seaweed restoration in Tobo. We removed 350 sea urchins and placed 6 bags of seed seaweed. There is no change yet where we placed bags last year, so we will keep watching."}}, {"id": 3, "label": "見本③ 串浦（脱線あり）/ Sample 3 Kushiura (off-topic talk)", "memo": "いやー今日は朝から天気がよかったね、昨日の雨がうそみたい。串浦で7時半から始めて、終わったのは11時ごろ。うちのもん3人と、会社さんの若い子が5人、あと大学の先生が1人見に来とった。ガンガゼが南の方にえらい固まっとって、900はいったと思う。帰りに見たら、ホンダワラみたいなとが少し伸びとったばい。袋は今日は入れとらん。昼はみんなで港の食堂でちゃんぽん食べて、うまかった。", "result": {"date": "今日 / Today", "place": "串浦 南側 / South side, Kushiura", "people": {"coop": 3, "company": 5, "other": 1}, "hours": 3.5, "urchins_removed": 900, "seed_bags": 0, "sea_changes": ["ホンダワラのような海藻が少し伸びていた / Some seaweed (like hondawara) was growing"], "needs_check": ["ガンガゼ900は「思う」＝推定 / 900 urchins is an estimate", "大学の先生1名は見学（作業人数に含めるか確認）/ 1 university researcher observed — confirm if counted", "終了時刻は「ごろ」＝推定（3.5時間）/ End time is approximate (3.5 h)"], "report_ja": "本日、串浦地区にて貴社社員5名と漁協3名で藻場づくりを行い、大学の研究者1名が見学しました。ガンガゼが集まっていた南側で、推定約900個を取り除きました。作業後、海藻が少し伸びている様子が確認されました。", "report_en": "Today, 5 of your employees and 3 co-op members worked on seaweed restoration in Kushiura, with 1 university researcher observing. We removed an estimated 900 sea urchins on the south side. After the work, we saw some seaweed starting to grow.", "left_out": ["天気の話 / weather", "昼ごはん（ちゃんぽん）/ lunch"]}}], "running_total_after_3": {"days": 3, "people": 27, "company_volunteers": 16, "work_hours": 8.5, "urchins_removed": 1870, "seed_bags": 10}}</script>
 <script>
 
-const LIVE_SECONDS = null;
+const LIVE_SECONDS = 6.6;
 const BASELINE = { days: 6, people: 41, company: 18, hours: 98, urchins: 3850, bags: 24 };
 const BUNDLE = JSON.parse(document.getElementById("sample-bundle").textContent);
 const SAMPLES = BUNDLE.samples.map((s) => ({ id: s.id, label: s.label, memo: s.memo, expected: s.result }));
@@ -188,8 +190,10 @@ Return ONLY valid JSON (no markdown fences) with this shape:
 {"date":string|null,"place":string|null,"people":{"coop":number|null,"company":number|null,"other":number|null},"hours":number|null,"urchins_removed":number|null,"seed_bags":number|null,"sea_changes":[string,...],"needs_check":[string,...],"report_ja":string,"report_en":string}
 Rules:
 - Never invent numbers not stated in the memo; use null and explain in needs_check.
-- Mark estimates when words like 「くらい」「思う」「ごろ」 appear.
-- Omit talk unrelated to the work (weather, lunch, etc.) from reports; note in needs_check if needed.
+- In report_en, name the sponsor "Genkai Blue Electric Co." — never transliterate the company name.
+- needs_check: only (a) numbers not clearly stated in the memo, or (b) numbers marked as estimates via 「くらい」「ごろ」「思う」; maximum 3 items; never describe how work was divided among people.
+- If a total headcount is stated and coop plus company equals that total, set other to 0.
+- Omit talk unrelated to the work (weather, lunch, etc.) from reports.
 - Reports: 3–5 short, simple sentences each in report_ja (Japanese) and report_en (English).`;
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("en-US") : n);
