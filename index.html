@@ -1,158 +1,230 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>海の森レポート / Sea Forest Report</title>
-  <style>
-    :root { --accent: #189DE0; --border: #d8e8f0; }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Hiragino Sans", "Noto Sans JP", sans-serif; background: #fff; color: #222; line-height: 1.5; }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 1rem; }
-    header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: 1rem; }
-    header h1 { margin: 0; font-size: 1.25rem; color: var(--accent); }
-    .api-key label { font-size: .75rem; display: block; }
-    .api-key input { width: min(220px, 100%); padding: .35rem .5rem; border: 1px solid var(--border); border-radius: 4px; }
-    .banner { background: #e8f6fc; border: 1px solid var(--accent); color: #0a5578; padding: .5rem .75rem; border-radius: 6px; font-size: .9rem; margin-bottom: 1rem; }
-    section { margin-bottom: 1.5rem; }
-    section h2 { font-size: 1rem; margin: 0 0 .5rem; border-left: 4px solid var(--accent); padding-left: .5rem; }
-    .sample-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .5rem; }
-    .sample-btns button { border: 1px solid var(--accent); background: #fff; color: var(--accent); padding: .4rem .75rem; border-radius: 4px; cursor: pointer; font-size: .85rem; }
-    .sample-btns button.active { background: var(--accent); color: #fff; }
-    textarea { width: 100%; min-height: 120px; padding: .75rem; border: 1px solid var(--border); border-radius: 6px; font-size: .95rem; resize: vertical; }
-    .primary { margin-top: .75rem; background: var(--accent); color: #fff; border: none; padding: .6rem 1.2rem; border-radius: 6px; font-size: 1rem; cursor: pointer; }
-    .primary:disabled { opacity: .6; cursor: wait; }
-    .claude-line { font-size: .95rem; margin-bottom: .5rem; }
-    .spinner { width: 28px; height: 28px; border: 3px solid #e0e0e0; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: .5rem 0; display: none; }
-    .spinner.show { display: block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: .5rem; }
-    th, td { border: 1px solid var(--border); padding: .4rem .5rem; text-align: left; vertical-align: top; }
-    th { background: #f4fafd; width: 38%; }
-    .output-area { position: relative; }
-    .fallback-label { position: absolute; top: 0; right: 0; background: #fff3cd; border: 1px solid #e6c200; font-size: .75rem; padding: .25rem .5rem; border-radius: 4px; display: none; z-index: 2; }
-    .fallback-label.show { display: block; }
-    .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin: 1rem 0; }
-    @media (min-width: 640px) { .cards { grid-template-columns: repeat(4, 1fr); } }
-    .card { border: 1px solid var(--border); border-radius: 8px; padding: .75rem; text-align: center; }
-    .card .num { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-    .card .sub { font-size: .75rem; color: #666; margin-top: .25rem; }
-    .card .label { font-size: .8rem; }
-    .baseline-note { font-size: .75rem; color: #666; margin-bottom: .5rem; }
-    .addressee { font-weight: 600; margin: 1rem 0 .5rem; }
-    .reports { display: grid; gap: 1rem; }
-    @media (min-width: 720px) { .reports { grid-template-columns: 1fr 1fr; } }
-    .report-box { border: 1px solid var(--border); border-radius: 8px; padding: .75rem; }
-    .report-box h3 { margin: 0 0 .5rem; font-size: .9rem; }
-    .report-text { white-space: pre-wrap; font-size: .9rem; min-height: 4rem; }
-    .copy-btn { margin-top: .5rem; font-size: .8rem; border: 1px solid var(--accent); background: #fff; color: var(--accent); padding: .25rem .6rem; border-radius: 4px; cursor: pointer; }
-    .seconds-line { margin: 1rem 0; padding: .75rem; background: #f8fcfe; border-radius: 6px; font-size: .9rem; }
-    footer { font-size: .75rem; color: #666; border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1.5rem; }
-    .hidden { display: none !important; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海の森レポート / Sea Forest Report</title>
+<style>
+:root { --ink:#0b2a3a; --ink2:rgba(11,42,58,.68); --g1:rgba(255,255,255,.5); --g2:rgba(255,255,255,.18); --gb:rgba(255,255,255,.7); --field:rgba(255,255,255,.38); }
+* { box-sizing:border-box; }
+html,body { margin:0; height:100%; }
+body { font-family:"Noto Sans JP","Hiragino Sans",system-ui,sans-serif; font-size:18px; line-height:1.5; color:var(--ink); overflow:hidden; transition:color .9s; }
+body.scene-deep { --ink:#eef7fb; --ink2:rgba(238,247,251,.7); --g1:rgba(255,255,255,.2); --g2:rgba(255,255,255,.05); --gb:rgba(255,255,255,.32); --field:rgba(255,255,255,.1); }
+body.scene-moonlit { --ink:#f3f6fb; --ink2:rgba(243,246,251,.7); --g1:rgba(255,255,255,.18); --g2:rgba(255,255,255,.05); --gb:rgba(255,255,255,.3); --field:rgba(255,255,255,.1); }
+@keyframes drift1{0%{transform:translate(0,0) scale(1)}33%{transform:translate(18vw,-10vh) scale(1.25)}66%{transform:translate(-8vw,14vh) scale(.9)}100%{transform:translate(0,0) scale(1)}}
+@keyframes drift2{0%{transform:translate(0,0) scale(1)}40%{transform:translate(-22vw,12vh) scale(1.15)}70%{transform:translate(10vw,-16vh) scale(1.3)}100%{transform:translate(0,0) scale(1)}}
+@keyframes drift3{0%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(12vw,18vh) rotate(25deg)}100%{transform:translate(0,0) rotate(0deg)}}
+@keyframes rays{0%{transform:translateX(-6%) skewX(-14deg);opacity:.5}50%{transform:translateX(6%) skewX(-10deg);opacity:.9}100%{transform:translateX(-6%) skewX(-14deg);opacity:.5}}
+@keyframes caustic{0%{background-position:0 0,0 0}100%{background-position:400px 260px,-300px 420px}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.9)}60%{transform:translateY(-2px) scale(1.04)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes caret{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0),0 18px 50px rgba(0,30,60,.35)}50%{box-shadow:0 0 0 10px rgba(255,255,255,.08),0 18px 60px rgba(0,30,60,.45)}}
+@keyframes wave{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.backdrop{position:fixed;inset:0;z-index:0;overflow:hidden}
+.bg-layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s}
+.bg-layer.on{opacity:1}
+.bg-bright{background:linear-gradient(160deg,oklch(0.95 0.04 200),oklch(0.62 0.13 215))}
+.bg-deep{background:linear-gradient(170deg,oklch(0.42 0.10 225),oklch(0.16 0.05 255))}
+.bg-moonlit{background:linear-gradient(165deg,oklch(0.30 0.09 275),oklch(0.42 0.12 190))}
+.blob{position:absolute;border-radius:50%;filter:blur(40px);opacity:.55}
+.b1{width:48vw;height:48vw;left:-10vw;top:-20vh;background:rgba(255,255,255,.75);animation:drift1 28s ease-in-out infinite}
+.b2{width:42vw;height:42vw;left:55vw;top:40vh;background:oklch(0.9 0.08 180/.8);animation:drift2 34s ease-in-out infinite}
+.b3{width:36vw;height:36vw;left:30vw;top:60vh;background:oklch(0.88 0.1 210/.7);animation:drift3 40s ease-in-out infinite}
+.scene-deep .b1,.scene-moonlit .b1{background:oklch(0.75 0.14 200/.55)}
+.caustic{position:absolute;inset:-20%;opacity:.35;mix-blend-mode:overlay;background-image:radial-gradient(ellipse 120px 60px at 50% 50%,rgba(255,255,255,.9),transparent 70%),radial-gradient(ellipse 90px 50px at 30% 60%,rgba(255,255,255,.8),transparent 70%);background-size:340px 220px,260px 180px;animation:caustic 26s linear infinite}
+.ray{position:absolute;top:-10%;height:130%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);filter:blur(18px);animation:rays 14s ease-in-out infinite}
+.ray.r2{left:58%;width:10%;animation-duration:19s;animation-delay:-6s}
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh;height:100dvh;min-height:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:clamp(12px,2vw,24px) clamp(16px,3vw,48px) 8px}
+.glass-pill{display:flex;align-items:center;gap:12px;padding:10px 20px 10px 12px;border-radius:999px;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);border:1px solid var(--gb);box-shadow:0 12px 40px rgba(0,30,60,.18),inset 0 1px 0 rgba(255,255,255,.7);max-width:100%}
+.sphere{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:radial-gradient(circle at 30% 30%,#fff,oklch(0.55 0.14 215));box-shadow:inset 0 -4px 8px rgba(0,40,70,.25),0 4px 12px rgba(0,40,70,.25)}
+.topbar h1{margin:0;font-size:clamp(15px,1.3vw,22px);font-weight:700}
+.api-pill{padding:6px 8px 6px 16px;gap:10px}
+.api-pill input{width:clamp(110px,14vw,200px);min-width:0;padding:8px 14px;border-radius:999px;border:1px solid var(--gb);background:var(--field);color:inherit;font:inherit;font-size:14px}
+.api-pill span{font-size:13px;font-weight:500;white-space:nowrap}
+.sample-banner{margin:0 clamp(16px,3vw,48px) 8px;padding:9px 20px;border-radius:999px;text-align:center;font-size:14px;font-weight:600;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(20px);border:1px solid var(--gb)}
+.sample-banner-input{width:min(880px,100%);margin-left:auto;margin-right:auto}
+.hero.retreat .sample-banner-input{display:none}
+.stage{position:relative;flex:1;min-height:0;overflow:hidden}
+.hero{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px clamp(16px,3vw,48px) 24px;transition:filter .6s,transform .6s,opacity .6s}
+.hero.retreat{filter:blur(10px);transform:scale(.94);opacity:.25;pointer-events:none}
+.hero-card{position:relative;width:min(880px,100%);padding:clamp(20px,3vw,40px);border-radius:clamp(22px,2.5vw,32px);background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(32px) saturate(180%);border:1px solid var(--gb);box-shadow:0 30px 90px rgba(0,30,60,.28),inset 0 1px 0 rgba(255,255,255,.8);overflow:hidden}
+.hero-card h2{margin:0;font-size:clamp(24px,2.4vw,34px);font-weight:800}
+.hero-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.sample-btns{display:flex;gap:10px;flex-wrap:wrap}
+.sample-btns button{padding:9px 20px;border-radius:999px;border:1px solid var(--gb);cursor:pointer;font:inherit;font-size:16px;font-weight:600;background:rgba(255,255,255,.14);transition:all .35s}
+.sample-btns button.active{background:linear-gradient(135deg,oklch(0.62 0.14 215),oklch(0.5 0.13 225));color:#fff;box-shadow:0 10px 24px rgba(0,40,80,.22)}
+body.scene-moonlit .sample-btns button.active,body.scene-deep .sample-btns button.active{color:#0b2a3a;background:rgba(255,255,255,.9)}
+#memo{width:100%;min-height:clamp(130px,24vh,200px);margin-top:20px;padding:18px 20px;border-radius:20px;border:1px solid var(--gb);background:var(--field);color:inherit;font:inherit;font-size:clamp(16px,1.3vw,21px);line-height:1.7;resize:vertical}
+.hero-actions{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-top:22px;flex-wrap:wrap}
+.claude-line{margin:0;font-size:15px;color:var(--ink2);max-width:460px}
+#create-btn{position:relative;overflow:hidden;padding:14px 28px;border:none;border-radius:999px;cursor:pointer;font:inherit;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(135deg,oklch(0.62 0.14 215),oklch(0.48 0.13 230));box-shadow:0 14px 36px rgba(0,40,80,.28);animation:breathe 2.8s ease-in-out infinite}
+#create-btn:disabled{opacity:.75;cursor:wait}
+#create-btn .wave{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:wave 1.1s linear infinite;display:none}
+#create-btn.loading .wave{display:block}
+.loading-strip{margin-top:24px;padding:14px 20px;border-radius:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);display:none;align-items:center;gap:16px;animation:rise .5s both}
+.loading-strip.show{display:flex}
+.pulse-dot{width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 0 18px 4px rgba(255,255,255,.7);animation:caret 1s ease-in-out infinite}
+.shimmer-bar{flex:1;height:6px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.18)}
+.shimmer-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,transparent,#fff,transparent);background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+.hero-foot{margin:20px 0 0;font-size:13px;text-align:center;color:var(--ink2)}
+.sheet{position:absolute;inset:0;transform:translateY(100%);transition:transform .65s cubic-bezier(.22,1,.36,1);z-index:3;background:transparent}
+.sheet.open{transform:translateY(0)}
+.sheet-scroll{height:100%;overflow:auto;padding:clamp(16px,2.5vw,32px) clamp(16px,3vw,48px) 32px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.sheet-head-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#back-btn{display:flex;align-items:center;gap:10px;padding:10px 20px 10px 14px;border-radius:999px;border:1px solid var(--gb);background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(20px);cursor:pointer;font:inherit;font-size:15px;font-weight:600}
+.sheet h2{margin:0;font-size:clamp(24px,2.4vw,34px);font-weight:800}
+.fallback-pill{display:none;padding:7px 14px;border-radius:999px;background:rgba(255,220,120,.25);border:1px solid rgba(255,220,120,.6);color:#ffe9a8;font-size:13px;font-weight:600;animation:pop .5s both}
+.fallback-pill.show{display:inline-block}
+.baseline-note{margin:0;font-size:14px;color:var(--ink2)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+.tile{position:relative;padding:20px 22px;border-radius:24px;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(28px);border:1px solid var(--gb);box-shadow:0 24px 70px rgba(0,20,50,.35),inset 0 1px 0 rgba(255,255,255,.5);animation:rise .7s both}
+.tile .label{font-size:15px;color:var(--ink2)}
+.tile .row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:6px}
+.tile .num{font-size:clamp(40px,4vw,76px);font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.delta{display:none;padding:4px 12px;border-radius:999px;background:oklch(0.82 0.16 160/.25);border:1px solid oklch(0.85 0.16 160/.6);color:oklch(0.93 0.12 160);font-size:16px;font-weight:700}
+.delta.show{display:inline-block;animation:pop .6s 1.4s both}
+.tile .sub{margin-top:8px;font-size:14px;color:var(--ink2)}
+.columns{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:18px;margin-top:18px;align-items:start}
+.glass-panel{padding:28px 30px;border-radius:28px;background:linear-gradient(135deg,var(--g1),var(--g2));backdrop-filter:blur(28px);border:1px solid var(--gb);box-shadow:0 24px 70px rgba(0,20,50,.35),inset 0 1px 0 rgba(255,255,255,.5);animation:rise .7s both}
+.field-row{display:grid;grid-template-columns:1fr 1.2fr;gap:8px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.field-row .k{font-size:14px;font-weight:600;color:var(--ink2)}
+.field-row .v{font-size:16px;white-space:pre-line;line-height:1.55}
+.addressee{margin:0 0 -4px 6px;font-size:18px;font-weight:700}
+.report-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:12px}
+.report-head h3{margin:0;font-size:18px;font-weight:700}
+.copy-btn{padding:7px 16px;border-radius:999px;border:1px solid var(--gb);background:rgba(255,255,255,.12);cursor:pointer;font:inherit;font-size:13px;font-weight:600}
+.report-body{font-size:19px;line-height:1.85;min-height:72px;white-space:pre-wrap}
+.report-body.en{line-height:1.75}
+.caret{display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:text-bottom;animation:caret .8s step-end infinite}
+.caret.off{display:none}
+.seconds-line{padding:16px 24px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);font-size:16px;animation:rise .7s both}
+.seconds-line small{font-size:13px;color:var(--ink2)}
+.hidden{display:none!important}
+@media (max-width:390px){body{font-size:16px}.topbar,.sample-banner,.sheet-scroll{padding-left:12px;padding-right:12px}}
+</style>
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>海の森レポート / Sea Forest Report</h1>
-      <div class="api-key">
-        <label for="api-key">API key / APIキー</label>
-        <input id="api-key" type="password" autocomplete="off" placeholder="sk-ant-…">
-      </div>
-    </header>
+<body class="scene-bright">
 
-    <div class="banner" id="banner-input">見本データ（架空の数字）/ Sample data (not real numbers)</div>
-
-    <section id="input-section">
-      <h2>入れる / Input</h2>
-      <div class="sample-btns" id="sample-btns"></div>
-      <textarea id="memo" placeholder="音声メモの文字起こし / Voice memo transcript"></textarea>
-      <button type="button" class="primary" id="create-btn">レポートを作る / Create report</button>
-    </section>
-
-    <section id="claude-section">
-      <h2>Claudeがしていること / What Claude does</h2>
-      <p class="claude-line">話した内容から 場所・人数・時間・作業の量・海の変化 を取り出し、会社向けの報告を書いています</p>
-      <div class="spinner" id="spinner" aria-hidden="true"></div>
-      <div id="fields-wrap" class="hidden">
-        <table id="fields-table"><tbody></tbody></table>
-      </div>
-    </section>
-
-    <div class="banner" id="banner-output">見本データ（架空の数字）/ Sample data (not real numbers)</div>
-
-    <section id="output-section" class="output-area">
-      <h2>出てくる / Output</h2>
-      <div class="fallback-label" id="fallback-label">予備データ表示中 / fallback data</div>
-      <p class="baseline-note">累計の起点 / Baseline: 6 days · 41 people (18 company) · 98 h · 3,850 urchins · 24 bags</p>
-      <div class="cards" id="cards">
-        <div class="card"><div class="label">活動日数 / Days</div><div class="num" id="card-days">6</div></div>
-        <div class="card"><div class="label">参加者 / Participants</div><div class="num" id="card-people">41</div><div class="sub" id="card-company">うち会社 / company: 18</div></div>
-        <div class="card"><div class="label">ガンガゼ / Urchins</div><div class="num" id="card-urchins">3,850</div></div>
-        <div class="card"><div class="label">母藻袋 / Seed bags</div><div class="num" id="card-bags">24</div></div>
-      </div>
-      <p class="addressee">玄界ブルー電機株式会社 御中（架空）</p>
-      <div class="reports hidden" id="reports">
-        <div class="report-box">
-          <h3>会社向け報告（日本語）/ Report (JA)</h3>
-          <div class="report-text" id="report-ja"></div>
-          <button type="button" class="copy-btn" data-target="report-ja">Copy / コピー</button>
-        </div>
-        <div class="report-box">
-          <h3>Report (English) / 英語</h3>
-          <div class="report-text" id="report-en"></div>
-          <button type="button" class="copy-btn" data-target="report-en">Copy / コピー</button>
-        </div>
-      </div>
-      <div class="seconds-line" id="seconds-line"></div>
-    </section>
-
-    <footer>見本データ（架空）です。藻場 1,286→612ha、漁業者 1,062→668人は唐津市の公開資料</footer>
+<div class="backdrop" aria-hidden="true">
+  <div class="bg-layer bg-bright on" id="bg-bright"></div>
+  <div class="bg-layer bg-deep" id="bg-deep"></div>
+  <div class="bg-layer bg-moonlit" id="bg-moonlit"></div>
+  <div class="caustic"></div>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="ray" style="left:10%;width:18%"></div><div class="ray r2"></div>
+</div>
+<div class="app">
+  <div class="topbar">
+    <div class="glass-pill"><div class="sphere"></div><h1>海の森レポート / Sea Forest Report</h1></div>
+    <label class="glass-pill api-pill"><span>API key / APIキー</span><input id="api-key" type="password" autocomplete="off" placeholder="sk-ant-…"></label>
   </div>
+  <div class="stage">
+    <div class="hero" id="hero">
+      <p class="sample-banner sample-banner-input">見本データ（架空の数字）/ Sample data (not real numbers)</p>
+      <div class="hero-card">
+        <div class="hero-head"><h2>入れる / Input</h2><div class="sample-btns" id="sample-btns"></div></div>
+        <textarea id="memo" placeholder="音声メモの文字起こし / Voice memo transcript"></textarea>
+        <div class="hero-actions">
+          <p class="claude-line">話した内容から 場所・人数・時間・作業の量・海の変化 を取り出し、会社向けの報告を書いています</p>
+          <button type="button" id="create-btn"><span class="wave"></span><span class="label">レポートを作る / Create report</span></button>
+        </div>
+        <div class="loading-strip" id="loading-strip">
+          <div class="pulse-dot"></div>
+          <div>Claudeがしていること / What Claude does</div>
+          <div class="shimmer-bar"><i></i></div>
+        </div>
+      </div>
+      <p class="hero-foot">見本データ（架空）です。藻場 1,286→612ha、漁業者 1,062→668人は唐津市の公開資料</p>
+    </div>
+    <div class="sheet" id="sheet">
+      <div class="sheet-scroll">
+        <div class="sheet-head">
+          <div class="sheet-head-left">
+            <button type="button" id="back-btn"><span>←</span> 入れる / Input</button>
+            <h2>出てくる / Output</h2>
+            <span class="fallback-pill" id="fallback-pill">予備データ表示中 / fallback data</span>
+          </div>
+          <p class="baseline-note">累計の起点 / Baseline: 6 days · 41 people (18 company) · 98 h · 3,850 urchins · 24 bags</p>
+        </div>
+        <p class="sample-banner" style="margin:0 0 14px">見本データ（架空の数字）/ Sample data (not real numbers)</p>
+        <div class="tiles">
+          <div class="tile"><div class="label">活動日数 / Days</div><div class="row"><div class="num" id="card-days">6</div><span class="delta" id="delta-days"></span></div></div>
+          <div class="tile"><div class="label">参加者 / Participants</div><div class="row"><div class="num" id="card-people">41</div><span class="delta" id="delta-people"></span></div><div class="sub" id="card-company">うち会社 / company: 18</div></div>
+          <div class="tile"><div class="label">ガンガゼ / Urchins</div><div class="row"><div class="num" id="card-urchins">3,850</div><span class="delta" id="delta-urchins"></span></div></div>
+          <div class="tile"><div class="label">母藻袋 / Seed bags</div><div class="row"><div class="num" id="card-bags">24</div><span class="delta" id="delta-bags"></span></div></div>
+        </div>
+        <div class="columns">
+          <div class="glass-panel"><h3 style="margin:0 0 16px;font-size:20px;font-weight:700">Claudeがしていること / What Claude does</h3><div id="fields-list"></div></div>
+          <div style="display:grid;gap:18px">
+            <p class="addressee">玄界ブルー電機株式会社 御中（架空）</p>
+            <div class="glass-panel">
+              <div class="report-head"><h3>会社向け報告（日本語）/ Report (JA)</h3><button type="button" class="copy-btn" data-target="report-ja">Copy / コピー</button></div>
+              <div class="report-body" id="report-ja"></div><span class="caret" id="caret-ja"></span>
+            </div>
+            <div class="glass-panel">
+              <div class="report-head"><h3>Report (English) / 英語</h3><button type="button" class="copy-btn" data-target="report-en">Copy / コピー</button></div>
+              <div class="report-body en" id="report-en"></div><span class="caret" id="caret-en"></span>
+            </div>
+            <div class="seconds-line" id="seconds-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <script type="application/json" id="sample-bundle">{"_note": "見本データ（架空の数字）/ Sample data (not real numbers). 地区名は実在、数字はすべて架空。", "sponsor": "玄界ブルー電機株式会社（架空）/ Genkai Blue Electric Co. (fictional)", "samples": [{"id": 1, "label": "見本① 駄竹 / Sample 1 Datake", "memo": "今日は朝8時から11時まで、駄竹の北側の岩場でやりました。漁協から4人、玄界ブルー電機さんから6人来てくれて、全部で10人。潜りは漁協の2人で、会社の人は船の上と浜で袋詰めと数えるのを手伝ってもらいました。ガンガゼは全部で620個くらい取った。母藻の袋は4つ沈めた。水はまだちょっとぬるいね、23度くらいやった。前に袋を入れたところで、小さい芽がちらほら出てきとる。ここ2年はなかったけん、ちょっとうれしかった。", "result": {"date": "今日 / Today", "place": "駄竹 北側の岩場 / North rocks, Datake", "people": {"coop": 4, "company": 6, "other": 0}, "hours": 3, "urchins_removed": 620, "seed_bags": 4, "sea_changes": ["水温 約23℃ / Water about 23°C", "以前母藻を入れた場所で海藻の芽を確認（2年ぶり）/ Young seaweed seen where bags were placed before (first time in 2 years)"], "needs_check": ["ガンガゼの数は「くらい」＝推定 / Urchin count is an estimate", "水温は「くらい」＝推定 / Water temperature is an estimate"], "report_ja": "本日、駄竹地区にて貴社社員6名と漁協4名の計10名で藻場づくりを行いました。海藻を食べるガンガゼを約620個取り除き、海藻の種となる母藻を4袋設置しました。以前母藻を設置した場所で、2年ぶりに海藻の芽が確認されました。ご支援ありがとうございます。", "report_en": "Today, 6 of your employees and 4 co-op members (10 people) worked on seaweed restoration in Datake. We removed about 620 sea urchins that eat seaweed and placed 4 bags of seed seaweed. Young seaweed was seen where we placed bags before, for the first time in two years. Thank you for your support."}}, {"id": 2, "label": "見本② 唐房 / Sample 2 Tobo", "memo": "唐房です。今日は9時から11時まで。うちの漁協から3人、会社さんから5人で8人やね。ガンガゼは350個。数は会社の人たちがちゃんと数えてくれた。母藻の袋は6つ入れました。去年入れたところはまだ変化なし。波はおだやかやった。", "result": {"date": "今日 / Today", "place": "唐房 / Tobo", "people": {"coop": 3, "company": 5, "other": 0}, "hours": 2, "urchins_removed": 350, "seed_bags": 6, "sea_changes": ["昨年の設置場所はまだ変化なし / No change yet where bags were placed last year", "波はおだやか / Calm sea"], "needs_check": [], "report_ja": "本日、唐房地区にて貴社社員5名と漁協3名の計8名で藻場づくりを行いました。ガンガゼを350個取り除き、母藻を6袋設置しました。昨年設置した場所はまだ変化が見られず、引き続き観察します。", "report_en": "Today, 5 of your employees and 3 co-op members (8 people) worked on seaweed restoration in Tobo. We removed 350 sea urchins and placed 6 bags of seed seaweed. There is no change yet where we placed bags last year, so we will keep watching."}}, {"id": 3, "label": "見本③ 串浦（脱線あり）/ Sample 3 Kushiura (off-topic talk)", "memo": "いやー今日は朝から天気がよかったね、昨日の雨がうそみたい。串浦で7時半から始めて、終わったのは11時ごろ。うちのもん3人と、会社さんの若い子が5人、あと大学の先生が1人見に来とった。ガンガゼが南の方にえらい固まっとって、900はいったと思う。帰りに見たら、ホンダワラみたいなとが少し伸びとったばい。袋は今日は入れとらん。昼はみんなで港の食堂でちゃんぽん食べて、うまかった。", "result": {"date": "今日 / Today", "place": "串浦 南側 / South side, Kushiura", "people": {"coop": 3, "company": 5, "other": 1}, "hours": 3.5, "urchins_removed": 900, "seed_bags": 0, "sea_changes": ["ホンダワラのような海藻が少し伸びていた / Some seaweed (like hondawara) was growing"], "needs_check": ["ガンガゼ900は「思う」＝推定 / 900 urchins is an estimate", "大学の先生1名は見学（作業人数に含めるか確認）/ 1 university researcher observed — confirm if counted", "終了時刻は「ごろ」＝推定（3.5時間）/ End time is approximate (3.5 h)"], "report_ja": "本日、串浦地区にて貴社社員5名と漁協3名で藻場づくりを行い、大学の研究者1名が見学しました。ガンガゼが集まっていた南側で、推定約900個を取り除きました。作業後、海藻が少し伸びている様子が確認されました。", "report_en": "Today, 5 of your employees and 3 co-op members worked on seaweed restoration in Kushiura, with 1 university researcher observing. We removed an estimated 900 sea urchins on the south side. After the work, we saw some seaweed starting to grow.", "left_out": ["天気の話 / weather", "昼ごはん（ちゃんぽん）/ lunch"]}}], "running_total_after_3": {"days": 3, "people": 27, "company_volunteers": 16, "work_hours": 8.5, "urchins_removed": 1870, "seed_bags": 10}}</script>
-  <script>
+<script type="application/json" id="sample-bundle">{"_note": "見本データ（架空の数字）/ Sample data (not real numbers). 地区名は実在、数字はすべて架空。", "sponsor": "玄界ブルー電機株式会社（架空）/ Genkai Blue Electric Co. (fictional)", "samples": [{"id": 1, "label": "見本① 駄竹 / Sample 1 Datake", "memo": "今日は朝8時から11時まで、駄竹の北側の岩場でやりました。漁協から4人、玄界ブルー電機さんから6人来てくれて、全部で10人。潜りは漁協の2人で、会社の人は船の上と浜で袋詰めと数えるのを手伝ってもらいました。ガンガゼは全部で620個くらい取った。母藻の袋は4つ沈めた。水はまだちょっとぬるいね、23度くらいやった。前に袋を入れたところで、小さい芽がちらほら出てきとる。ここ2年はなかったけん、ちょっとうれしかった。", "result": {"date": "今日 / Today", "place": "駄竹 北側の岩場 / North rocks, Datake", "people": {"coop": 4, "company": 6, "other": 0}, "hours": 3, "urchins_removed": 620, "seed_bags": 4, "sea_changes": ["水温 約23℃ / Water about 23°C", "以前母藻を入れた場所で海藻の芽を確認（2年ぶり）/ Young seaweed seen where bags were placed before (first time in 2 years)"], "needs_check": ["ガンガゼの数は「くらい」＝推定 / Urchin count is an estimate", "水温は「くらい」＝推定 / Water temperature is an estimate"], "report_ja": "本日、駄竹地区にて貴社社員6名と漁協4名の計10名で藻場づくりを行いました。海藻を食べるガンガゼを約620個取り除き、海藻の種となる母藻を4袋設置しました。以前母藻を設置した場所で、2年ぶりに海藻の芽が確認されました。ご支援ありがとうございます。", "report_en": "Today, 6 of your employees and 4 co-op members (10 people) worked on seaweed restoration in Datake. We removed about 620 sea urchins that eat seaweed and placed 4 bags of seed seaweed. Young seaweed was seen where we placed bags before, for the first time in two years. Thank you for your support."}}, {"id": 2, "label": "見本② 唐房 / Sample 2 Tobo", "memo": "唐房です。今日は9時から11時まで。うちの漁協から3人、会社さんから5人で8人やね。ガンガゼは350個。数は会社の人たちがちゃんと数えてくれた。母藻の袋は6つ入れました。去年入れたところはまだ変化なし。波はおだやかやった。", "result": {"date": "今日 / Today", "place": "唐房 / Tobo", "people": {"coop": 3, "company": 5, "other": 0}, "hours": 2, "urchins_removed": 350, "seed_bags": 6, "sea_changes": ["昨年の設置場所はまだ変化なし / No change yet where bags were placed last year", "波はおだやか / Calm sea"], "needs_check": [], "report_ja": "本日、唐房地区にて貴社社員5名と漁協3名の計8名で藻場づくりを行いました。ガンガゼを350個取り除き、母藻を6袋設置しました。昨年設置した場所はまだ変化が見られず、引き続き観察します。", "report_en": "Today, 5 of your employees and 3 co-op members (8 people) worked on seaweed restoration in Tobo. We removed 350 sea urchins and placed 6 bags of seed seaweed. There is no change yet where we placed bags last year, so we will keep watching."}}, {"id": 3, "label": "見本③ 串浦（脱線あり）/ Sample 3 Kushiura (off-topic talk)", "memo": "いやー今日は朝から天気がよかったね、昨日の雨がうそみたい。串浦で7時半から始めて、終わったのは11時ごろ。うちのもん3人と、会社さんの若い子が5人、あと大学の先生が1人見に来とった。ガンガゼが南の方にえらい固まっとって、900はいったと思う。帰りに見たら、ホンダワラみたいなとが少し伸びとったばい。袋は今日は入れとらん。昼はみんなで港の食堂でちゃんぽん食べて、うまかった。", "result": {"date": "今日 / Today", "place": "串浦 南側 / South side, Kushiura", "people": {"coop": 3, "company": 5, "other": 1}, "hours": 3.5, "urchins_removed": 900, "seed_bags": 0, "sea_changes": ["ホンダワラのような海藻が少し伸びていた / Some seaweed (like hondawara) was growing"], "needs_check": ["ガンガゼ900は「思う」＝推定 / 900 urchins is an estimate", "大学の先生1名は見学（作業人数に含めるか確認）/ 1 university researcher observed — confirm if counted", "終了時刻は「ごろ」＝推定（3.5時間）/ End time is approximate (3.5 h)"], "report_ja": "本日、串浦地区にて貴社社員5名と漁協3名で藻場づくりを行い、大学の研究者1名が見学しました。ガンガゼが集まっていた南側で、推定約900個を取り除きました。作業後、海藻が少し伸びている様子が確認されました。", "report_en": "Today, 5 of your employees and 3 co-op members worked on seaweed restoration in Kushiura, with 1 university researcher observing. We removed an estimated 900 sea urchins on the south side. After the work, we saw some seaweed starting to grow.", "left_out": ["天気の話 / weather", "昼ごはん（ちゃんぽん）/ lunch"]}}], "running_total_after_3": {"days": 3, "people": 27, "company_volunteers": 16, "work_hours": 8.5, "urchins_removed": 1870, "seed_bags": 10}}</script>
+<script>
 
-const LIVE_SECONDS = null;
-
-const BASELINE = {
-  days: 6,
-  people: 41,
-  company: 18,
-  hours: 98,
-  urchins: 3850,
-  bags: 24,
-};
-
+const LIVE_SECONDS = 6.6;
+const BASELINE = { days: 6, people: 41, company: 18, hours: 98, urchins: 3850, bags: 24 };
 const BUNDLE = JSON.parse(document.getElementById("sample-bundle").textContent);
-const SAMPLES = BUNDLE.samples.map((s) => ({
-  id: s.id,
-  label: s.label,
-  memo: s.memo,
-  expected: s.result,
-}));
-
+const SAMPLES = BUNDLE.samples.map((s) => ({ id: s.id, label: s.label, memo: s.memo, expected: s.result }));
 const SYSTEM_PROMPT = `You extract structured data from a fisher's voice memo about seaweed bed restoration (removing gangaze sea urchins, placing seed-seaweed bags) and write sponsor reports.
 Return ONLY valid JSON (no markdown fences) with this shape:
 {"date":string|null,"place":string|null,"people":{"coop":number|null,"company":number|null,"other":number|null},"hours":number|null,"urchins_removed":number|null,"seed_bags":number|null,"sea_changes":[string,...],"needs_check":[string,...],"report_ja":string,"report_en":string}
 Rules:
 - Never invent numbers not stated in the memo; use null and explain in needs_check.
-- Mark estimates when words like 「くらい」「思う」「ごろ」 appear.
-- Omit talk unrelated to the work (weather, lunch, etc.) from reports; note in needs_check if needed.
+- In report_en, name the sponsor "Genkai Blue Electric Co." — never transliterate the company name.
+- needs_check: only (a) numbers not clearly stated in the memo, or (b) numbers marked as estimates via 「くらい」「ごろ」「思う」; maximum 3 items; never describe how work was divided among people.
+- If a total headcount is stated and coop plus company equals that total, set other to 0.
+- Omit talk unrelated to the work (weather, lunch, etc.) from reports.
 - Reports: 3–5 short, simple sentences each in report_ja (Japanese) and report_en (English).`;
-
 const $ = (id) => document.getElementById(id);
-const fmt = (n) => (typeof n === "number" ? n.toLocaleString("en-US") : n);
-
+const fmt = (n) => (typeof n === "number" ? Math.round(n).toLocaleString("en-US") : n);
 let selectedId = 1;
-let usedFallback = false;
+let reportJaFull = "";
+let reportEnFull = "";
+let jaTypeTimer = null;
+let enTypeTimer = null;
+const num = (v) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
+function clearTypeTimers() {
+  if (jaTypeTimer) clearInterval(jaTypeTimer);
+  if (enTypeTimer) clearInterval(enTypeTimer);
+  jaTypeTimer = enTypeTimer = null;
+}
+
+function setScene(mode) {
+  document.body.className = "scene-" + mode;
+  ["bright", "deep", "moonlit"].forEach((m) => {
+    $("bg-" + m).classList.toggle("on", m === mode);
+  });
+}
 
 function initSamples() {
   const wrap = $("sample-btns");
   SAMPLES.forEach((s) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = `見本${"①②③"[s.id - 1]}`;
+    btn.textContent = "見本" + "①②③"[s.id - 1];
     btn.title = s.label;
     btn.dataset.id = String(s.id);
     btn.addEventListener("click", () => selectSample(s.id));
@@ -168,34 +240,62 @@ function selectSample(id) {
   document.querySelectorAll("#sample-btns button").forEach((b) => {
     b.classList.toggle("active", Number(b.dataset.id) === id);
   });
-  resetOutput();
+  closeSheet();
 }
 
-function resetOutput() {
-  $("fields-wrap").classList.add("hidden");
-  $("fields-table").querySelector("tbody").innerHTML = "";
-  $("reports").classList.add("hidden");
+function closeSheet() {
+  $("sheet").classList.remove("open");
+  $("hero").classList.remove("retreat");
+  setScene("bright");
+  $("fallback-pill").classList.remove("show");
+  $("fields-list").innerHTML = "";
+  reportJaFull = reportEnFull = "";
   $("report-ja").textContent = "";
   $("report-en").textContent = "";
-  $("fallback-label").classList.remove("show");
-  usedFallback = false;
-  setCards(BASELINE);
+  $("caret-ja").classList.add("off");
+  $("caret-en").classList.add("off");
+  clearTypeTimers();
+  resetTiles(BASELINE);
   renderSeconds(null, false);
 }
 
-function setCards(totals) {
-  $("card-days").textContent = fmt(totals.days);
-  $("card-people").textContent = fmt(totals.people);
-  $("card-company").textContent = `うち会社 / company: ${totals.company}`;
-  $("card-urchins").textContent = fmt(totals.urchins);
-  $("card-bags").textContent = fmt(totals.bags);
+function resetTiles(t) {
+  ["days", "people", "urchins", "bags"].forEach((k) => {
+    const el = $("card-" + k);
+    if (el) el.textContent = fmt(t[k]);
+    const d = $("delta-" + k);
+    if (d) { d.classList.remove("show"); d.textContent = ""; }
+  });
+  $("card-company").textContent = "うち会社 / company: " + t.company;
+}
+
+function animateTiles(target) {
+  const keys = ["days", "people", "urchins", "bags"];
+  const start = { ...BASELINE };
+  const dur = 1800;
+  const t0 = performance.now();
+  keys.forEach((k) => {
+    const delta = target[k] - BASELINE[k];
+    const dp = $("delta-" + k);
+    if (delta > 0) { dp.textContent = "+" + fmt(delta); dp.classList.add("show"); }
+  });
+  function frame(now) {
+    const p = Math.min(1, (now - t0) / dur);
+    const ease = 1 - Math.pow(1 - p, 3);
+    keys.forEach((k) => {
+      $("card-" + k).textContent = fmt(start[k] + (target[k] - start[k]) * ease);
+    });
+    $("card-company").textContent = "うち会社 / company: " + Math.round(start.company + (target.company - start.company) * ease);
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 }
 
 function notStated(v) {
   return v === null || v === undefined || v === "" ? "未確認 / not stated" : v;
 }
 
-function renderTable(data) {
+function renderFields(data) {
   const p = data.people || {};
   const rows = [
     ["日付 / Date", notStated(data.date)],
@@ -206,112 +306,103 @@ function renderTable(data) {
     ["時間 / Hours", notStated(data.hours)],
     ["ガンガゼ / Urchins removed", notStated(data.urchins_removed)],
     ["母藻袋 / Seed bags", notStated(data.seed_bags)],
-    [
-      "海の変化 / Sea changes",
-      (data.sea_changes && data.sea_changes.length)
-        ? data.sea_changes.join("\n")
-        : "未確認 / not stated",
-    ],
-    [
-      "要確認 / Needs check",
-      (data.needs_check && data.needs_check.length)
-        ? data.needs_check.join("\n")
-        : "未確認 / not stated",
-    ],
+    ["海の変化 / Sea changes", (data.sea_changes && data.sea_changes.length) ? data.sea_changes.join("\n") : "未確認 / not stated"],
+    ["要確認 / Needs check", (data.needs_check && data.needs_check.length) ? data.needs_check.join("\n") : "未確認 / not stated"],
   ];
-  const tbody = $("fields-table").querySelector("tbody");
-  tbody.innerHTML = rows
-    .map(
-      ([k, v]) =>
-        `<tr><th>${k}</th><td>${String(v).replace(/\n/g, "<br>")}</td></tr>`
-    )
-    .join("");
-  $("fields-wrap").classList.remove("hidden");
+  $("fields-list").innerHTML = rows.map(([k, v]) =>
+    `<div class="field-row"><div class="k">${k}</div><div class="v">${String(v).replace(/\n/g, "<br>")}</div></div>`
+  ).join("");
 }
 
-function applyTotalsFromResult(data) {
+function totalsFrom(data) {
   const p = data.people || {};
-  const peopleAdd =
-    (p.coop ?? 0) + (p.company ?? 0) + (p.other ?? 0);
-  setCards({
+  const peopleAdd = num(p.coop) + num(p.company) + num(p.other);
+  return {
     days: BASELINE.days + 1,
     people: BASELINE.people + peopleAdd,
-    company: BASELINE.company + (p.company ?? 0),
-    urchins: BASELINE.urchins + (data.urchins_removed ?? 0),
-    bags: BASELINE.bags + (data.seed_bags ?? 0),
-  });
+    company: BASELINE.company + num(p.company),
+    urchins: BASELINE.urchins + num(data.urchins_removed),
+    bags: BASELINE.bags + num(data.seed_bags),
+  };
 }
 
-function renderReports(data) {
-  $("report-ja").textContent = data.report_ja || "";
-  $("report-en").textContent = data.report_en || "";
-  $("reports").classList.remove("hidden");
+function typeReports(ja, en) {
+  clearTypeTimers();
+  reportJaFull = ja || "";
+  reportEnFull = en || "";
+  $("report-ja").textContent = "";
+  $("report-en").textContent = "";
+  $("caret-ja").classList.remove("off");
+  $("caret-en").classList.add("off");
+  let i = 0;
+  jaTypeTimer = setInterval(() => {
+    i++;
+    $("report-ja").textContent = reportJaFull.slice(0, i);
+    if (i >= reportJaFull.length) {
+      clearInterval(jaTypeTimer);
+      jaTypeTimer = null;
+      $("caret-ja").classList.add("off");
+      let j = 0;
+      $("caret-en").classList.remove("off");
+      enTypeTimer = setInterval(() => {
+        j++;
+        $("report-en").textContent = reportEnFull.slice(0, j);
+        if (j >= reportEnFull.length) {
+          clearInterval(enTypeTimer);
+          enTypeTimer = null;
+          $("caret-en").classList.add("off");
+        }
+      }, 16);
+    }
+  }, 34);
 }
 
 function renderSeconds(elapsedSec, isLive) {
-  let jaSec;
-  let enSec;
+  let jaSec, enSec;
   if (isLive && elapsedSec != null) {
     const s = (Math.round(elapsedSec * 10) / 10).toFixed(1);
-    jaSec = `${s}秒`;
-    enSec = `${s} sec`;
+    jaSec = s + "秒";
+    enSec = s + " sec";
   } else if (LIVE_SECONDS != null) {
-    jaSec = `${LIVE_SECONDS}秒`;
-    enSec = `${LIVE_SECONDS} sec`;
+    jaSec = LIVE_SECONDS + "秒";
+    enSec = LIVE_SECONDS + " sec";
   } else {
     jaSec = "＿＿秒（測定前）";
     enSec = "__ sec (not measured yet)";
   }
   $("seconds-line").innerHTML =
-    `このアプリで：${jaSec} / With this app: ${enSec}<br>` +
-    `<span style="font-size:.8rem;color:#666">` +
-    `（今かかっている時間は、次に漁協で確かめます / We will check the current time with a co-op next）` +
-    `</span>`;
+    `このアプリで：<strong style="font-weight:800;font-size:20px">${jaSec}</strong> / With this app: <strong style="font-weight:800;font-size:20px">${enSec}</strong><br>` +
+    `<small>（今かかっている時間は、次に漁協で確かめます / We will check the current time with a co-op next）</small>`;
+}
+
+function showResult(data, fallback, elapsedSec, isLive) {
+  setScene("moonlit");
+  $("hero").classList.add("retreat");
+  $("sheet").classList.add("open");
+  $("fallback-pill").classList.toggle("show", fallback);
+  renderFields(data);
+  animateTiles(totalsFrom(data));
+  typeReports(data.report_ja, data.report_en);
+  renderSeconds(elapsedSec, isLive);
 }
 
 function parseModelJson(text) {
   let t = text.trim();
-  if (t.startsWith("```")) {
-    t = t.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
-  }
+  if (t.startsWith("```")) t = t.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
   return JSON.parse(t);
 }
 
 async function callClaude(apiKey, memo) {
-  const body = {
-    model: "claude-sonnet-5-5",
-    max_tokens: 3000,
-    thinking: { type: "between_tools" },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: memo }],
-  };
+  const body = { model: "claude-sonnet-5-5", max_tokens: 3000, thinking: { type: "between_tools" }, system: SYSTEM_PROMPT, messages: [{ role: "user", content: memo }] };
   let res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
-      "content-type": "application/json",
-    },
+    headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true", "content-type": "application/json" },
     body: JSON.stringify(body),
   });
   if (res.status === 400) {
     const errText = await res.text();
-    if (/thinking/i.test(errText)) {
-      delete body.thinking;
-      res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01",
-          "anthropic-dangerous-direct-browser-access": "true",
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-    } else {
-      throw new Error(errText);
-    }
+    if (/thinking/i.test(errText)) { delete body.thinking; res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true", "content-type": "application/json" }, body: JSON.stringify(body) }); }
+    else throw new Error(errText);
   }
   if (!res.ok) throw new Error(await res.text());
   const json = await res.json();
@@ -321,66 +412,59 @@ async function callClaude(apiKey, memo) {
   return parseModelJson(textBlock.text);
 }
 
-function useFallback(reason) {
+function useFallback() {
   const sample = SAMPLES.find((s) => s.id === selectedId);
-  $("fallback-label").classList.add("show");
-  usedFallback = true;
   if (!sample || !sample.expected) {
-    $("fields-wrap").classList.add("hidden");
-    $("reports").classList.add("hidden");
-    setCards(BASELINE);
+    $("fallback-pill").classList.add("show");
+    setScene("moonlit");
+    $("sheet").classList.add("open");
+    $("hero").classList.add("retreat");
+    resetTiles(BASELINE);
     renderSeconds(null, false);
     return;
   }
-  const data = sample.expected;
-  renderTable(data);
-  applyTotalsFromResult(data);
-  renderReports(data);
-  renderSeconds(null, false);
+  showResult(sample.expected, true, null, false);
 }
 
 async function onCreate() {
-  resetOutput();
+  closeSheet();
   const memo = $("memo").value.trim();
   const apiKey = $("api-key").value.trim();
   $("create-btn").disabled = true;
-  $("spinner").classList.add("show");
+  $("create-btn").classList.add("loading");
+  $("loading-strip").classList.add("show");
+  setScene("deep");
   const t0 = performance.now();
-
   try {
     if (!apiKey) throw new Error("empty key");
     const data = await callClaude(apiKey, memo);
     const elapsed = (performance.now() - t0) / 1000;
-    renderTable(data);
-    applyTotalsFromResult(data);
-    renderReports(data);
-    renderSeconds(elapsed, true);
+    showResult(data, false, elapsed, true);
   } catch {
-    useFallback("error");
+    useFallback();
   } finally {
-    $("spinner").classList.remove("show");
     $("create-btn").disabled = false;
+    $("create-btn").classList.remove("loading");
+    $("loading-strip").classList.remove("show");
   }
 }
 
-document.getElementById("create-btn").addEventListener("click", onCreate);
+$("create-btn").addEventListener("click", onCreate);
+$("back-btn").addEventListener("click", closeSheet);
 document.querySelectorAll(".copy-btn").forEach((btn) => {
   btn.addEventListener("click", async () => {
-    const el = $(btn.dataset.target);
+    const id = btn.dataset.target;
+    const text = id === "report-ja" ? reportJaFull : reportEnFull;
     try {
-      await navigator.clipboard.writeText(el.textContent);
+      await navigator.clipboard.writeText(text);
       btn.textContent = "Copied / コピー済";
-      setTimeout(() => {
-        btn.textContent = "Copy / コピー";
-      }, 1500);
-    } catch {
-      btn.textContent = "Copy failed";
-    }
+      setTimeout(() => { btn.textContent = "Copy / コピー"; }, 1500);
+    } catch { btn.textContent = "Copy failed"; }
   });
 });
-
 initSamples();
+setScene("bright");
 
-  </script>
+</script>
 </body>
 </html>
