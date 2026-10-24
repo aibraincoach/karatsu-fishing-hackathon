@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+vendor/
+.venv/
+__pycache__/
+*.pyc
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# Build and IDE
+dist/
+build/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Logs and local data
+*.log
+tmp/
+.cache/
