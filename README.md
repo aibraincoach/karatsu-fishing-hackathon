@@ -1,12 +1,20 @@
 # Karatsu Fishing Hackathon
 
-Project workspace for the Karatsu fishing hackathon.
+**海の森レポート / Sea Forest Report** — hackathon demo for seaweed restoration reporting.
 
-## Getting started
+## Demo
 
-Add your app code, docs, and team notes here as the hackathon progresses.
+- **Staging (main on Vercel):** https://karatsu-fishing-hackathon-aibraincoachs-projects.vercel.app/
+- **Local:** `python3 -m http.server 8765` then http://localhost:8765/
+
+## Agents
+
+Read [CLAUDE.md](CLAUDE.md) at startup. Governance: [docs/](docs/). Sample data: [sample_data.json](sample_data.json). Verify sums: `node verify_sample_data.js`.
 
 ## Structure
 
-- `docs/` — planning, APIs, and reference material
-- `src/` — application source (add your stack here)
+- `index.html` — single-file demo (Part A)
+- `sample_data.json` — team sample memos and fallback results
+- `docs/` — PM/planner contracts, backlog, staging URL
+- `tools/` — Perplexity review runner (same behaviour as NAC)
+- `src/` — reserved for later app code
